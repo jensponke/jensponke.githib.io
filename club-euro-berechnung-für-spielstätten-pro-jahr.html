@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Euro - Berechnung für Spielstätten pro Jahr</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff4500, #ff1493, #9932cc);
+            color: #fff;
+        }
+        h1 {
+            color: #fff;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .result-item {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .result-item strong {
+            color: #ffd700;
+        }
+        .disclaimer {
+            font-size: 14px;
+            color: #ffcccb;
+            font-style: italic;
+            margin: 10px 0;
+            display: none;
+        }
+        .info {
+            font-size: 14px;
+            color: #fff;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        th, td {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px;
+            text-align: center;
+            color: #fff;
+        }
+        th {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Club Euro - Berechnung für Spielstätten pro Jahr</h1>
+    
+    <div class="input-group">
+        <label for="kapazitaet">Kapazität bei Konzerten:</label>
+        <input type="number" id="kapazitaet" min="1">
+    </div>
+    
+    <div class="input-group">
+        <label for="konzerteProJahr">Konzerte pro Jahr:</label>
+        <input type="number" id="konzerteProJahr" min="0">
+    </div>
+    
+    <div class="input-group">
+        <label for="besucherProKonzert">Durchschnittliche Besucherzahl pro Konzert:</label>
+        <input type="number" id="besucherProKonzert" min="0">
+    </div>
+
+    <div class="result">
+        <h2>Jahres-Ergebnis auf Basis deiner Angaben</h2>
+        <div class="result-item">
+            <strong>Deine direkten Einnahmen ab sofort (€):</strong> <span id="direkteEinnahme">0</span>
+        </div>
+        <div class="result-item">
+            <strong>Deine Kapazitäts-Stufe:</strong> <span id="stufe">Unbekannt</span>
+        </div>
+        <div class="result-item">
+            <strong>Dein Soli-Anteil pro Ticket (€):</strong> <span id="soliAnteilProTicket">0,00</span>
+        </div>      
+        <div class="result-item">
+            <strong>Dein voraussichtlich jährlicher Anteil am Soli-Fonds (€):</strong> <span id="soliAnteilProJahr">0</span>
+        </div>
+        <div class="disclaimer" id="disclaimer">
+            Diese zusätzliche Einnahme erhältst du laut unserer Forecasts voraussichtlich ab Anfang 2028. Das liegt daran, dass große Locations erst einzahlen können, wenn die Shows abgerechnet werden und Vorläufe entsprechend groß sind. Außerdem müssen zunächst Investitionen in Kommunikation und Organisationsentwicklung refinanziert werden. 
+        </div>
+        <div class="result-item">
+            <strong>Club Euro gesamt / Jahr (€):</strong> <span id="clubEuroGesamt">0</span>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3>Stufenübersicht:</h3>
+        <table>
+            <tr><th>Stufe</th><th>von</th><th>bis</th><th>Verteilung</th><th>pro Ticket</th></tr>
+            <tr><td>A</td><td>2.000</td><td>4.999</td><td>-50%</td><td>-0,50 €</td></tr>
+            <tr><td>B</td><td>1.400</td><td>1.999</td><td>-20%</td><td>-0,20 €</td></tr>
+            <tr><td>C</td><td>799</td><td>1.399</td><td>-10%</td><td>-0,10 €</td></tr>
+            <tr><td>D</td><td>500</td><td>799</td><td>0%</td><td>0,00 €</td></tr>
+            <tr><td>E</td><td>400</td><td>499</td><td>25%</td><td>0,25 €</td></tr>
+            <tr><td>F</td><td>200</td><td>399</td><td>50%</td><td>0,50 €</td></tr>
+            <tr><td>G</td><td>100</td><td>199</td><td>100%</td><td>1,00 €</td></tr>
+            <tr><td>H</td><td>1</td><td>99</td><td>150%</td><td>1,50 €</td></tr>
+        </table>
+    </div>
+
+    <script>
+        // Funktion zur Formatierung von Zahlen mit Tausender-Trennzeichen
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace(".", ",");
+        }
+
+        // Funktion zur Bestimmung der Stufe und des Soli-Anteils pro Ticket
+        function berechneSoliAnteilUndStufe(kapazitaet) {
+            if (kapazitaet >= 2000 && kapazitaet <= 4999) return { stufe: "A", solianteil: -0.50 };
+            if (kapazitaet >= 1400 && kapazitaet <= 1999) return { stufe: "B", solianteil: -0.20 };
+            if (kapazitaet >= 799 && kapazitaet <= 1399) return { stufe: "C", solianteil: -0.10 };
+            if (kapazitaet >= 500 && kapazitaet <= 799) return { stufe: "D", solianteil: 0.00 };
+            if (kapazitaet >= 400 && kapazitaet <= 499) return { stufe: "E", solianteil: 0.25 };
+            if (kapazitaet >= 200 && kapazitaet <= 399) return { stufe: "F", solianteil: 0.50 };
+            if (kapazitaet >= 100 && kapazitaet <= 199) return { stufe: "G", solianteil: 1.00 };
+            if (kapazitaet >= 1 && kapazitaet <= 99) return { stufe: "H", solianteil: 1.50 };
+            return { stufe: "Unbekannt", solianteil: 0.00 };
+        }
+
+        // Funktion zur Berechnung der Ergebnisse
+        function berechneErgebnisse() {
+            // Werte aus den Eingabefeldern lesen
+            const kapazitaet = parseFloat(document.getElementById('kapazitaet').value) || 0;
+            const konzerteProJahr = parseFloat(document.getElementById('konzerteProJahr').value) || 0;
+            const besucherProKonzert = parseFloat(document.getElementById('besucherProKonzert').value) || 0;
+
+            // Maximalwert für Besucher pro Konzert auf Kapazität begrenzen
+            const maxBesucher = Math.min(besucherProKonzert, kapazitaet);
+            document.getElementById('besucherProKonzert').value = maxBesucher;
+
+            // Stufe und Soli-Anteil pro Ticket bestimmen
+            const { stufe, solianteil } = berechneSoliAnteilUndStufe(kapazitaet);
+
+            // Berechnungen
+            const ticketsProJahr = maxBesucher * konzerteProJahr;
+            const direkteEinnahme = ticketsProJahr * 1; // Annahme: 1€ pro Ticket
+            const solianteilProJahr = ticketsProJahr * solianteil;
+            const clubEuroGesamt = direkteEinnahme + solianteilProJahr;
+
+            // Ergebnisse anzeigen (mit Tausender-Trennzeichen)
+            document.getElementById('stufe').textContent = stufe;
+            document.getElementById('direkteEinnahme').textContent = formatNumber(direkteEinnahme);
+            document.getElementById('soliAnteilProTicket').textContent = solianteil.toFixed(2).replace(".", ",");
+            document.getElementById('soliAnteilProJahr').textContent = formatNumber(solianteilProJahr);
+            document.getElementById('clubEuroGesamt').textContent = formatNumber(clubEuroGesamt);
+
+            // Disclaimer nur anzeigen, wenn der Soli-Anteil pro Jahr > 0 ist
+            const disclaimer = document.getElementById('disclaimer');
+            if (solianteilProJahr > 0) {
+                disclaimer.style.display = 'block';
+            } else {
+                disclaimer.style.display = 'none';
+            }
+        }
+
+        // Event-Listener für Eingabefelder
+        document.getElementById('kapazitaet').addEventListener('input', berechneErgebnisse);
+        document.getElementById('konzerteProJahr').addEventListener('input', berechneErgebnisse);
+        document.getElementById('besucherProKonzert').addEventListener('input', berechneErgebnisse);
+
+        // Initial berechnen
+        berechneErgebnisse();
+    </script>
+</body>
+</html>
